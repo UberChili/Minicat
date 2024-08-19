@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, fs};
 
 pub struct Config {
     pub files: Vec<String>,
@@ -22,4 +22,12 @@ impl Config {
     }
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {}
+pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    for file in config.files {
+        let contents = fs::read_to_string(file)?;
+
+        println!("{contents}");
+    }
+
+    Ok(())
+}
