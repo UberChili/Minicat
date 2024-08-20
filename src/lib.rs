@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, fs};
 
 pub struct Config {
     pub files: Vec<String>,
@@ -13,17 +13,18 @@ impl Config {
         let mut result = vec![];
         let args = &args[1..];
         for arg in args {
-            result.push(arg);
+            result.push(arg.clone());
         }
 
-        let files = vec![];
+        let files = result;
         Ok(Config { files })
     }
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     for file in config.files {
-        println!("{file}");
+        let contents = fs::read_to_string(file)?;
+        print!("{contents}");
     }
 
     Ok(())
