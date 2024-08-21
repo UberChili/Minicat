@@ -19,7 +19,6 @@ pub struct Config {
 }
 
 impl Config {
-    //pub fn build(args: &[String]) -> Result<Config, &'static str> {
     pub fn build(args: Args) -> Result<Config, &'static str> {
         let line_num: bool;
         if args.line_num {
@@ -31,7 +30,6 @@ impl Config {
         if args.files.len() < 2 {
             return Err("Not enough arguments");
         }
-        println!("Len of files: {}", args.files.len());
 
         let mut result = vec![];
         //let args = &args[1..];
@@ -45,15 +43,17 @@ impl Config {
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    for file in config.files {
-        let contents = fs::read_to_string(file)?;
-        print!("{contents}");
-    }
+    let results = if config.line_num {
+        todo!();
+    } else {
+        cat(config.files)
+    };
 
+    println!("{}", results.unwrap());
     Ok(())
 }
 
-pub fn cat(files: Vec<String>) -> String {
+pub fn cat(files: Vec<String>) -> Result<String, Box<dyn Error>> {
     let mut result: String = String::new();
     for file in files {
         if let Ok(contents) = fs::read_to_string(&file) {
@@ -62,12 +62,8 @@ pub fn cat(files: Vec<String>) -> String {
             eprintln!("Unable to read file {file}");
         }
     }
-    result
+    Ok(result)
 }
-
-//pub fn cat_with_numlines(files: Vec<String>) -> String {
-//
-//}
 
 #[cfg(test)]
 mod tests {
@@ -82,7 +78,7 @@ mod tests {
         ];
         let content_concatenated = "one\ntwo\nthree\n";
 
-        assert_eq!(content_concatenated, cat(filenames));
+        assert_eq!(content_concatenated, cat(filenames).unwrap());
     }
 
     //#[test]
