@@ -49,10 +49,11 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         cat(config.files)
     };
 
-    println!("{}", results.unwrap());
+    print!("{}", results.unwrap());
     Ok(())
 }
 
+/// Normal cat functionality
 pub fn cat(files: Vec<String>) -> Result<String, Box<dyn Error>> {
     let mut result: String = String::new();
     for file in files {
