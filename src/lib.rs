@@ -32,7 +32,6 @@ impl Config {
         }
 
         let mut result = vec![];
-        //let args = &args[1..];
         for arg in args.files {
             result.push(arg.clone());
         }
@@ -42,6 +41,7 @@ impl Config {
     }
 }
 
+// Main program functionality
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let results = if config.line_num {
         cat_with_numlines(config.files)
@@ -66,6 +66,7 @@ pub fn cat(files: Vec<String>) -> Result<String, Box<dyn Error>> {
     Ok(result)
 }
 
+// Cat showing number lines
 pub fn cat_with_numlines(files: Vec<String>) -> Result<String, Box<dyn Error>> {
     let mut result: String = String::new();
     let mut count = 1;
