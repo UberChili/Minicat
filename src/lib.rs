@@ -44,7 +44,7 @@ impl Config {
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let results = if config.line_num {
-        todo!();
+        cat_with_numlines(config.files)
     } else {
         cat(config.files)
     };
@@ -60,9 +60,24 @@ pub fn cat(files: Vec<String>) -> Result<String, Box<dyn Error>> {
         if let Ok(contents) = fs::read_to_string(&file) {
             result += &contents;
         } else {
-            eprintln!("Unable to read file {file}");
+            eprintln!("Unable to read file {file}.");
         }
     }
+    Ok(result)
+}
+
+pub fn cat_with_numlines(files: Vec<String>) -> Result<String, Box<dyn Error>> {
+    let mut result: String = String::new();
+    let mut count = 1;
+    for file in files {
+        if let Ok(contents) = fs::read_to_string(&file) {
+            result += &format!("     {}  {}", count, &contents);
+            count += 1;
+        } else {
+            eprintln!("Unable to read file {file}.");
+        }
+    }
+
     Ok(result)
 }
 
@@ -82,14 +97,14 @@ mod tests {
         assert_eq!(content_concatenated, cat(filenames).unwrap());
     }
 
-    //#[test]
-    //fn with_numline() {
-    //    let filenames = vec![
-    //        "1.txt".to_string(),
-    //        "2.txt".to_string(),
-    //        "3.txt".to_string(),
-    //    ];
-    //    let content_concatenated = "1  one\n2  two\n3  three";
-    //    assert_eq!(content_concatenated, cat_with_numlines(filenames));
-    //}
+    #[test]
+    fn with_numline() {
+        let filenames = vec![
+            "1.txt".to_string(),
+            "2.txt".to_string(),
+            "3.txt".to_string(),
+        ];
+        let content_concatenated = "     1  one\n     2  two\n     3  three\n";
+        assert_eq!(content_concatenated, cat_with_numlines(filenames).unwrap());
+    }
 }
